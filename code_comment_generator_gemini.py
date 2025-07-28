@@ -12,7 +12,7 @@ def generate_docstring_gemini(code_snippet, node_type):
     Generate a concise, necessary docstring for a given Python code snippet using Gemini.
     """
     prompt = (
-        f'You are an expert Python developer. Write a concise, necessary docstring for the following {node_type}.'
+        f'You are an expert codeing developer. Write a concise, necessary docstring for the following {node_type}.'
         f' Only add a docstring if it is truly needed. Be brief and avoid over-commenting.'
         f' Do NOT repeat or restate the code; only explain what it does, its purpose, and any important details.'
         f' Include only what is essential for understanding the code.'
