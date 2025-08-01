@@ -17,7 +17,6 @@ CODE COMMENT GENERATOR/
 ├── app.py               # Streamlit web application (recommended)
 ├── infer.py             # Main inference script using CodeBERT
 ├── code_demo.html       # HTML web interface (legacy)
-├── run_app.py           # Streamlit app runner script
 ├── requirements.txt     # Python dependencies
 ├── README.md           # Project documentation
 └── .gitignore          # Git ignore rules
@@ -42,11 +41,7 @@ CODE COMMENT GENERATOR/
 
 1. **Run the Streamlit app**:
    ```bash
-   # Method 1: Direct streamlit command
    streamlit run app.py
-   
-   # Method 2: Using the runner script
-   python run_app.py
    ```
 
 2. **Use the interface**:
