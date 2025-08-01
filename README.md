@@ -14,11 +14,13 @@ This project uses Microsoft's CodeBERT model to generate intelligent inline code
 ## Project Structure
 ```
 CODE COMMENT GENERATOR/
-├── infer.py              # Main inference script using CodeBERT
-├── code_demo.html        # Web interface for code comment generation
-├── requirements.txt      # Python dependencies
-├── README.md            # Project documentation
-└── .gitignore           # Git ignore rules
+├── app.py               # Streamlit web application (recommended)
+├── infer.py             # Main inference script using CodeBERT
+├── code_demo.html       # HTML web interface (legacy)
+├── run_app.py           # Streamlit app runner script
+├── requirements.txt     # Python dependencies
+├── README.md           # Project documentation
+└── .gitignore          # Git ignore rules
 ```
 
 ## Installation
@@ -36,9 +38,27 @@ CODE COMMENT GENERATOR/
 
 ## Usage
 
-### Option 1: Web Interface (Recommended for beginners)
+### Option 1: Streamlit Web App (Recommended)
 
-1. **Open the web interface**:
+1. **Run the Streamlit app**:
+   ```bash
+   # Method 1: Direct streamlit command
+   streamlit run app.py
+   
+   # Method 2: Using the runner script
+   python run_app.py
+   ```
+
+2. **Use the interface**:
+   - The app will open in your default web browser
+   - Paste your code in the text area
+   - Select the programming language and device
+   - Click "Generate Comments"
+   - Download the commented code
+
+### Option 2: Legacy HTML Interface
+
+1. **Open the HTML interface**:
    ```bash
    # On Windows
    start code_demo.html
@@ -53,7 +73,7 @@ CODE COMMENT GENERATOR/
    - Click "Generate Comments"
    - View the commented code in the output section
 
-### Option 2: Command Line Interface
+### Option 3: Command Line Interface
 
 1. **Generate comments for a specific file**:
    ```bash
@@ -70,7 +90,7 @@ CODE COMMENT GENERATOR/
    python infer.py
    ```
 
-### Option 3: Programmatic Usage
+### Option 4: Programmatic Usage
 
 ```python
 from infer import generate_comment
@@ -146,7 +166,8 @@ This project uses **Microsoft's CodeBERT** (`microsoft/codebert-base-mlm`), whic
 - **Consistent Formatting**: Maintains proper code formatting and indentation
 
 ### Multi-Platform Support
-- **Web Interface**: Works in any modern web browser
+- **Streamlit Web App**: Modern, interactive web interface (recommended)
+- **HTML Interface**: Legacy web interface for basic usage
 - **Command Line**: Cross-platform Python script
 - **Programmatic API**: Can be integrated into other Python projects
 
