@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Comment Generator</title>
+    <style>
+        /* CSS for styling the page */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .code-section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .comment {
+            color: #27ae60;
+            font-style: italic;
+        }
+        .function {
+            color: #2980b9;
+        }
+        .keyword {
+            color: #8e44ad;
+        }
+        .string {
+            color: #e74c3c;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #output {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            min-height: 100px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        .language-selector {
+            margin-bottom: 15px;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Comment Generator</h1>
+    
+    <div class="code-section">
+        <h2>Input Your Code</h2>
+        <div class="input-section">
+            <div class="language-selector">
+                <label for="language-select">Select Language:</label>
+                <select id="language-select">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="csharp">C#</option>
+                </select>
+            </div>
+            <textarea id="code-input" placeholder="Paste your code here..."></textarea>
+            <button id="generate-btn" onclick="generateComments()">Generate Comments</button>
+        </div>
+    </div>
+    
+    <div class="code-section">
+        <h2>Generated Code with Comments</h2>
+        <pre><code id="commented-code">// Your commented code will appear here</code></pre>
+    </div>
+    
+    <script>
+        // Function to generate comments for the input code
+        function generateComments() {
+            const code = document.getElementById('code-input').value;
+            const language = document.getElementById('language-select').value;
+            
+            if (!code.trim()) {
+                alert('Please enter some code first!');
+                return;
+            }
+            
+            // Generate comments based on the selected language
+            let commentedCode;
+            switch (language) {
+                case 'javascript':
+                    commentedCode = generateJavaScriptComments(code);
+                    break;
+                case 'python':
+                    commentedCode = generatePythonComments(code);
+                    break;
+                case 'java':
+                    commentedCode = generateJavaComments(code);
+                    break;
+                case 'csharp':
+                    commentedCode = generateCSharpComments(code);
+                    break;
+                default:
+                    commentedCode = code;
+            }
+            
+            // Display the commented code with syntax highlighting
+            displayCommentedCode(commentedCode, language);
+        }
+        
+        // Function to display the commented code with syntax highlighting
+        function displayCommentedCode(code, language) {
+            const codeElement = document.getElementById('commented-code');
+            
+            // Clean any existing HTML class attributes from the code
+            code = code.replace(/class="[^"]*">/g, '');
+            code = code.replace(/class="[^"]*"/g, '');
+            code = code.replace(/<span class="[^"]*">/g, '');
+            code = code.replace(/<\/span>/g, '');
+            
+            // Don't apply syntax highlighting - just show clean code
+            codeElement.innerHTML = code;
+        }
+        
+        // Function to apply syntax highlighting to the code
+        function applySyntaxHighlighting(code, language) {
+            // First, clean any existing HTML class attributes from the code
+            code = code.replace(/class="[^"]*">/g, '');
+            code = code.replace(/class="[^"]*"/g, '');
+            
+            // Split the code into lines for processing
+            const lines = code.split('\n');
+            let highlightedLines = [];
+            
+            for (const line of lines) {
+                let highlightedLine = line;
+                
+                // Clean any HTML class attributes from this line
+                highlightedLine = highlightedLine.replace(/class="[^"]*">/g, '');
+                highlightedLine = highlightedLine.replace(/class="[^"]*"/g, '');
+                
+                // We're not adding class="comment" to comments anymore as requested by the user
+                // The comments will be displayed without any special styling
+                
+                // No syntax highlighting - just return the line as is
+                // This prevents the class="keyword" issue
+                
+                highlightedLines.push(highlightedLine);
+            }
+            
+            return highlightedLines.join('\n');
+        }
+        
+        // Function to generate comments for JavaScript code
+        function generateJavaScriptComments(code) {
+            // Split the code into lines for processing
+            const lines = code.split('\n');
+            let commentedLines = [];
+            
+            // Add a file-level comment if there isn't one already
+            if (!lines[0].trim().startsWith('//')) {
+                commentedLines.push('// JavaScript code for ' + detectPurpose(code, 'javascript'));
+                commentedLines.push('');
+            }
+            
+            // Process each line
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmedLine = line.trim();
+                
+                // Skip if the line is already a comment or empty
+                if (trimmedLine.startsWith('//') || trimmedLine === '') {
+                    commentedLines.push(line);
+                    continue;
+                }
+                
+                // Detect function declarations
+                const functionMatch = trimmedLine.match(/function\s+(\w+)\s*\(([^)]*)\)/);
+                if (functionMatch) {
+                    const functionName = functionMatch[1];
+                    const purpose = detectFunctionPurpose(functionName, code);
+                    commentedLines.push(line + '  // ' + purpose);
+                    continue;
+                }
+                
+                // Detect class declarations
+                const classMatch = trimmedLine.match(/class\s+(\w+)/);
+                if (classMatch) {
+                    const className = classMatch[1];
+                    const purpose = detectClassPurpose(className, code);
+                    commentedLines.push(line + '  // ' + purpose);
+                    continue;
+                }
+                
+                // Detect variable declarations
+                const varMatch = trimmedLine.match(/(const|let|var)\s+(\w+)\s*=/);
+                if (varMatch && !trimmedLine.startsWith('//')) {
+                    const varName = varMatch[2];
+                    commentedLines.push(line + '  // ' + detectVariablePurpose(varName, code));
+                    continue;
+                }
+                
+                // Detect loops
+                if (trimmedLine.startsWith('for') || trimmedLine.startsWith('while')) {
+                    commentedLines.push(line + '  // ' + detectLoopPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Detect conditionals
+                if (trimmedLine.startsWith('if') || trimmedLine.startsWith('else if') || trimmedLine.startsWith('switch')) {
+                    commentedLines.push(line + '  // ' + detectConditionalPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Add the line without modification if no special case was detected
+                commentedLines.push(line);
+            }
+            
+            return commentedLines.join('\n');
+        }
+        
+        // Function to generate comments for Python code
+        function generatePythonComments(code) {
+            // First, clean any existing HTML class attributes from the code
+            code = code.replace(/class="[^"]*">/g, '');
+            code = code.replace(/class="[^"]*"/g, '');
+            
+            // Split the code into lines for processing
+            const lines = code.split('\n');
+            let commentedLines = [];
+            
+            // Add a file-level comment if there isn't one already
+            if (!lines[0].trim().startsWith('#')) {
+                commentedLines.push('# Python code for ' + detectPurpose(code, 'python'));
+                commentedLines.push('');
+            }
+            
+            // Process each line
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                // Clean any HTML class attributes from this line
+                line = line.replace(/class="[^"]*">/g, '');
+                line = line.replace(/class="[^"]*"/g, '');
+                
+                const trimmedLine = line.trim();
+                
+                // Skip if the line is already a comment or empty
+                if (trimmedLine.startsWith('#') || trimmedLine === '') {
+                    commentedLines.push(line);
+                    continue;
+                }
+                
+                // Detect function declarations
+                const functionMatch = trimmedLine.match(/def\s+(\w+)\s*\(([^)]*)\)/);
+                if (functionMatch) {
+                    const functionName = functionMatch[1];
+                    const purpose = detectFunctionPurpose(functionName, code);
+                    commentedLines.push(line + '  # ' + purpose);
+                    continue;
+                }
+                
+                // Detect class declarations
+                const classMatch = trimmedLine.match(/class\s+(\w+)/);
+                if (classMatch) {
+                    const className = classMatch[1];
+                    const purpose = detectClassPurpose(className, code);
+                    commentedLines.push(line + '  # ' + purpose);
+                    continue;
+                }
+                
+                // Detect variable assignments
+                const varMatch = trimmedLine.match(/^(\w+)\s*=/);
+                if (varMatch && !trimmedLine.startsWith('#')) {
+                    const varName = varMatch[1];
+                    commentedLines.push(line + '  # ' + detectVariablePurpose(varName, code));
+                    continue;
+                }
+                
+                // Detect loops
+                if (trimmedLine.startsWith('for') || trimmedLine.startsWith('while')) {
+                    commentedLines.push(line + '  # ' + detectLoopPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Detect conditionals
+                if (trimmedLine.startsWith('if') || trimmedLine.startsWith('elif') || trimmedLine.startsWith('else:')) {
+                    commentedLines.push(line + '  # ' + detectConditionalPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Add the line without modification if no special case was detected
+                commentedLines.push(line);
+            }
+            
+            return commentedLines.join('\n');
+        }
+        
+        // Function to generate comments for Java code
+        function generateJavaComments(code) {
+            // Split the code into lines for processing
+            const lines = code.split('\n');
+            let commentedLines = [];
+            
+            // Process each line
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmedLine = line.trim();
+                
+                // Skip if the line is already a comment or empty
+                if (trimmedLine.startsWith('//') || trimmedLine === '') {
+                    commentedLines.push(line);
+                    continue;
+                }
+                
+                // Detect class declarations
+                const classMatch = trimmedLine.match(/class\s+(\w+)/);
+                if (classMatch) {
+                    const className = classMatch[1];
+                    const purpose = detectClassPurpose(className, code);
+                    commentedLines.push(line + '  // ' + purpose);
+                    continue;
+                }
+                
+                // Detect method declarations
+                const methodMatch = trimmedLine.match(/(?:public|private|protected)\s+(?:\w+)\s+(\w+)\s*\(([^)]*)\)/);
+                if (methodMatch) {
+                    const methodName = methodMatch[1];
+                    commentedLines.push(line + '  // ' + detectFunctionPurpose(methodName, code));
+                    continue;
+                }
+                
+                // Detect variable declarations
+                const varMatch = trimmedLine.match(/(?:private|protected|public)\s+(?:\w+)\s+(\w+)\s*=/);
+                if (varMatch) {
+                    const varName = varMatch[1];
+                    commentedLines.push(line + '  // ' + detectVariablePurpose(varName, code));
+                    continue;
+                }
+                
+                // Detect loops
+                if (trimmedLine.startsWith('for') || trimmedLine.startsWith('while')) {
+                    commentedLines.push(line + '  // ' + detectLoopPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Detect conditionals
+                if (trimmedLine.startsWith('if') || trimmedLine.startsWith('else if') || trimmedLine.startsWith('else {')) {
+                    commentedLines.push(line + '  // ' + detectConditionalPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Add the line without modification if no special case was detected
+                commentedLines.push(line);
+            }
+            
+            return commentedLines.join('\n');
+        }
+        
+        // Function to generate comments for C# code
+        function generateCSharpComments(code) {
+            // Split the code into lines for processing
+            const lines = code.split('\n');
+            let commentedLines = [];
+            
+            // Process each line
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmedLine = line.trim();
+                
+                // Skip if the line is already a comment or empty
+                if (trimmedLine.startsWith('//') || trimmedLine === '') {
+                    commentedLines.push(line);
+                    continue;
+                }
+                
+                // Detect class declarations
+                const classMatch = trimmedLine.match(/class\s+(\w+)/);
+                if (classMatch) {
+                    const className = classMatch[1];
+                    const purpose = detectClassPurpose(className, code);
+                    commentedLines.push(line + '  // ' + purpose);
+                    continue;
+                }
+                
+                // Detect method declarations
+                const methodMatch = trimmedLine.match(/(?:public|private|protected)\s+(?:\w+)\s+(\w+)\s*\(([^)]*)\)/);
+                if (methodMatch) {
+                    const methodName = methodMatch[1];
+                    commentedLines.push(line + '  // ' + detectFunctionPurpose(methodName, code));
+                    continue;
+                }
+                
+                // Detect variable declarations
+                const varMatch = trimmedLine.match(/(?:private|protected|public)\s+(?:\w+)\s+(\w+)\s*=/);
+                if (varMatch) {
+                    const varName = varMatch[1];
+                    commentedLines.push(line + '  // ' + detectVariablePurpose(varName, code));
+                    continue;
+                }
+                
+                // Detect loops
+                if (trimmedLine.startsWith('for') || trimmedLine.startsWith('while')) {
+                    commentedLines.push(line + '  // ' + detectLoopPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Detect conditionals
+                if (trimmedLine.startsWith('if') || trimmedLine.startsWith('else if') || trimmedLine.startsWith('else {')) {
+                    commentedLines.push(line + '  // ' + detectConditionalPurpose(trimmedLine, code));
+                    continue;
+                }
+                
+                // Add the line without modification if no special case was detected
+                commentedLines.push(line);
+            }
+            
+            return commentedLines.join('\n');
+        }
+        
+        // Helper function to detect the overall purpose of the code
+        function detectPurpose(code, language) {
+            // This is a simplified implementation
+            // In a real-world scenario, this would use more sophisticated analysis
+            
+            if (code.includes('sort') || code.includes('Sort')) {
+                return 'sorting algorithm implementation';
+            } else if (code.includes('search') || code.includes('Search') || code.includes('find') || code.includes('Find')) {
+                return 'search functionality';
+            } else if (code.includes('class') && (code.includes('get') || code.includes('set'))) {
+                return 'data model implementation';
+            } else if (code.includes('fetch') || code.includes('http') || code.includes('request')) {
+                return 'API communication';
+            } else if (code.includes('render') || code.includes('display') || code.includes('show') || code.includes('UI')) {
+                return 'user interface implementation';
+            } else {
+                return 'general purpose implementation';
+            }
+        }
+        
+        // Helper function to detect the purpose of a function
+        function detectFunctionPurpose(functionName, code) {
+            // Check for common naming patterns
+            if (functionName.startsWith('get')) {
+                return `Retrieves the ${functionName.substring(3).toLowerCase()}`;
+            } else if (functionName.startsWith('set')) {
+                return `Sets the ${functionName.substring(3).toLowerCase()}`;
+            } else if (functionName.startsWith('is') || functionName.startsWith('has') || functionName.startsWith('can')) {
+                return `Checks if ${functionName.substring(2).toLowerCase()}`;
+            } else if (functionName.startsWith('calc') || functionName.startsWith('compute')) {
+                return `Calculates the ${functionName.substring(4).toLowerCase()}`;
+            } else if (functionName.includes('search') || functionName.includes('Search') || functionName.includes('find') || functionName.includes('Find')) {
+                return `Searches for a specific element`;
+            } else if (functionName.includes('sort') || functionName.includes('Sort')) {
+                return `Sorts the elements`;
+            } else if (functionName.includes('validate') || functionName.includes('Validate')) {
+                return `Validates the input data`;
+            } else if (functionName.includes('process') || functionName.includes('Process')) {
+                return `Processes the data`;
+            } else if (functionName.includes('transform') || functionName.includes('Transform')) {
+                return `Transforms the data`;
+            } else if (functionName.includes('update') || functionName.includes('Update')) {
+                return `Updates the data`;
+            } else if (functionName.includes('create') || functionName.includes('Create')) {
+                return `Creates a new instance`;
+            } else if (functionName.includes('delete') || functionName.includes('Delete') || functionName.includes('remove') || functionName.includes('Remove')) {
+                return `Removes an element`;
+            } else if (functionName.includes('init') || functionName.includes('Init')) {
+                return `Initializes the component`;
+            } else if (functionName === 'main') {
+                return `Main entry point of the program`;
+            } else {
+                // If no specific pattern is found, provide a generic description
+                return `Handles ${functionName.replace(/([A-Z])/g, ' $1').toLowerCase().trim()} functionality`;
+            }
+        }
+        
+        // Helper function to detect the purpose of a parameter
+        function detectParamPurpose(paramName, functionName, code) {
+            // This is a simplified implementation
+            if (paramName === 'arr' || paramName === 'array' || paramName === 'list') {
+                return 'The array or list to process';
+            } else if (paramName === 'data') {
+                return 'The data to be processed';
+            } else if (paramName === 'callback' || paramName === 'fn' || paramName === 'func') {
+                return 'The callback function to execute';
+            } else if (paramName === 'options' || paramName === 'config') {
+                return 'Configuration options';
+            } else if (paramName === 'id') {
+                return 'Unique identifier';
+            } else if (paramName === 'name') {
+                return 'The name of the item';
+            } else if (paramName === 'value') {
+                return 'The value to be used';
+            } else if (paramName === 'index' || paramName === 'idx') {
+                return 'The index position';
+            } else if (paramName === 'key') {
+                return 'The key to identify the item';
+            } else if (paramName === 'target') {
+                return 'The target value to find';
+            } else if (paramName === 'element' || paramName === 'elem') {
+                return 'The element to process';
+            } else if (paramName === 'event' || paramName === 'e') {
+                return 'The event object';
+            } else {
+                return `The ${paramName.replace(/([A-Z])/g, ' $1').toLowerCase().trim()}`;
+            }
+        }
+        
+        // Helper function to detect the purpose of a return value
+        function detectReturnPurpose(functionName, code) {
+            // This is a simplified implementation
+            if (functionName.startsWith('get')) {
+                return `The ${functionName.substring(3).toLowerCase()} value`;
+            } else if (functionName.startsWith('is') || functionName.startsWith('has') || functionName.startsWith('can')) {
+                return 'True if the condition is met, false otherwise';
+            } else if (functionName.includes('find') || functionName.includes('search')) {
+                return 'The found element or null/undefined if not found';
+            } else if (functionName.includes('calc') || functionName.includes('compute')) {
+                return 'The calculated result';
+            } else if (functionName.includes('create')) {
+                return 'The newly created instance';
+            } else if (functionName.includes('validate')) {
+                return 'True if valid, false otherwise';
+            } else if (functionName.includes('process') || functionName.includes('transform')) {
+                return 'The processed or transformed data';
+            } else {
+                return 'The result of the operation';
+            }
+        }
+        
+        // Helper function to detect the purpose of a class
+        function detectClassPurpose(className, code) {
+            // This is a simplified implementation
+            if (className.includes('Controller')) {
+                return 'Controls the application flow';
+            } else if (className.includes('Service')) {
+                return 'Provides services to other components';
+            } else if (className.includes('Repository')) {
+                return 'Handles data access operations';
+            } else if (className.includes('Model')) {
+                return 'Represents a data model';
+            } else if (className.includes('View')) {
+                return 'Handles the user interface presentation';
+            } else if (className.includes('Factory')) {
+                return 'Creates instances of objects';
+            } else if (className.includes('Builder')) {
+                return 'Builds complex objects step by step';
+            } else if (className.includes('Manager')) {
+                return 'Manages resources or operations';
+            } else if (className.includes('Handler')) {
+                return 'Handles specific events or requests';
+            } else if (className.includes('Processor')) {
+                return 'Processes data or information';
+            } else if (className.includes('Validator')) {
+                return 'Validates data or input';
+            } else {
+                return `Represents a ${className.replace(/([A-Z])/g, ' $1').toLowerCase().trim()}`;
+            }
+        }
+        
+        // Helper function to detect the purpose of a variable
+        function detectVariablePurpose(varName, code) {
+            // This is a simplified implementation
+            if (varName === 'i' || varName === 'j' || varName === 'k') {
+                return 'Loop counter';
+            } else if (varName === 'temp' || varName === 'tmp') {
+                return 'Temporary storage';
+            } else if (varName === 'result' || varName === 'res') {
+                return 'Stores the result';
+            } else if (varName === 'data') {
+                return 'The data being processed';
+            } else if (varName === 'options' || varName === 'config') {
+                return 'Configuration options';
+            } else if (varName === 'count' || varName === 'counter') {
+                return 'Counts occurrences';
+            } else if (varName === 'index' || varName === 'idx') {
+                return 'Index position';
+            } else if (varName === 'length' || varName === 'len') {
+                return 'Length of the array or string';
+            } else if (varName === 'value' || varName === 'val') {
+                return 'The value being used';
+            } else if (varName === 'key') {
+                return 'The key for identification';
+            } else if (varName === 'flag') {
+                return 'Boolean flag for condition tracking';
+            } else if (varName === 'error' || varName === 'err') {
+                return 'Error information';
+            } else if (varName.startsWith('is') || varName.startsWith('has') || varName.startsWith('can')) {
+                return `Boolean flag indicating ${varName.substring(2).replace(/([A-Z])/g, ' $1').toLowerCase().trim()}`;
+            } else if (varName === 'left' || varName === 'right' || varName === 'mid') {
+                return 'Index for binary search or similar algorithm';
+            } else {
+                return `Stores the ${varName.replace(/([A-Z])/g, ' $1').toLowerCase().trim()}`;
+            }
+        }
+        
+        // Helper function to detect the purpose of a loop
+        function detectLoopPurpose(loopLine, code) {
+            // This is a simplified implementation
+            if (loopLine.includes('length') || loopLine.includes('size')) {
+                return 'Iterates through all elements';
+            } else if (loopLine.includes('< 10') || loopLine.includes('<=10')) {
+                return 'Performs a fixed number of iterations';
+            } else if (loopLine.includes('true')) {
+                return 'Continues until a condition is met';
+            } else {
+                return 'Iterates based on the condition';
+            }
+        }
+        
+        // Helper function to detect the purpose of a conditional
+        function detectConditionalPurpose(condLine, code) {
+            // This is a simplified implementation
+            if (condLine.includes('=== null') || condLine.includes('!== null') || condLine.includes('== null') || condLine.includes('!= null')) {
+                return 'Checks if the value is null';
+            } else if (condLine.includes('=== undefined') || condLine.includes('!== undefined')) {
+                return 'Checks if the value is undefined';
+            } else if (condLine.includes('length') || condLine.includes('size')) {
+                return 'Checks the size or length';
+            } else if (condLine.includes('> 0') || condLine.includes('< 0') || condLine.includes('>= 0') || condLine.includes('<= 0')) {
+                return 'Compares with zero';
+            } else if (condLine.includes('=== true') || condLine.includes('!== true') || condLine.includes('=== false') || condLine.includes('!== false')) {
+                return 'Checks a boolean condition';
+            } else {
+                return 'Checks the specified condition';
+            }
+        }
+    </script>
+</body>
+</html>
