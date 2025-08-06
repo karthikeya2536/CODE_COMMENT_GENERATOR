@@ -78,8 +78,6 @@ def calculate_tax(income, rate):
 ├── 🚀 app_simple.py              # Main Streamlit app
 ├── 📋 requirements_streamlit.txt # Dependencies
 ├── 📖 README.md                  # This file
-├── 🧹 cleanup.py                 # Cleanup script
-├── 🔧 .zencoder/                 # AI assistant config
 └── 🚫 .gitignore                 # Git ignore rules
 ```
 
